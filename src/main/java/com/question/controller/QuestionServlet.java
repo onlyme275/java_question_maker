@@ -19,7 +19,7 @@ public class QuestionServlet extends HttpServlet {
 
     QuestionDao dao = new QuestionDao();
 
-    // ---------------- SHOW QUIZ/ADMIN PANEL ----------------
+    // ================= LOAD QUESTIONS =================
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -33,180 +33,107 @@ public class QuestionServlet extends HttpServlet {
                     .forward(req, resp);
 
         } catch (Exception e) {
-            throw new ServletException("Error loading questions", e);
+            throw new ServletException("Load failed", e);
         }
     }
 
-    // ---------------- SUBMIT QUIZ OR ADMIN OPERATIONS ----------------
+    // ================= HANDLE ALL ACTIONS =================
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
         try {
+
+            HttpSession session = req.getSession(false);
+
+            if (session == null || session.getAttribute("user") == null) {
+                resp.sendRedirect(req.getContextPath() + "/pages/login.jsp");
+                return;
+            }
+
+            User user = (User) session.getAttribute("user");
+
             String action = req.getParameter("action");
 
-            // ============ ADMIN OPERATIONS ============
-            if ("add".equals(action)) {
-                addQuestion(req, resp);
+            boolean isAdmin = (user.getIs_staff() == 1);
+
+            // ================= ADMIN: ADD =================
+            if ("add".equals(action) && isAdmin) {
+
+                dao.addQuestion(buildQuestion(req));
+
+                resp.sendRedirect(req.getContextPath() + "/dashboard?page=question");
                 return;
             }
 
-            if ("delete".equals(action)) {
-                deleteQuestion(req, resp);
+            // ================= ADMIN: DELETE =================
+            if ("delete".equals(action) && isAdmin) {
+
+                int id = Integer.parseInt(req.getParameter("id"));
+                dao.deleteQuestion(id);
+
+                resp.sendRedirect(req.getContextPath() + "/dashboard?page=question");
                 return;
             }
 
-            if ("update".equals(action)) {
-                updateQuestion(req, resp);
+            // ================= ADMIN: UPDATE =================
+            if ("update".equals(action) && isAdmin) {
+
+                Question q = buildQuestion(req);
+                q.setId(Integer.parseInt(req.getParameter("id")));
+
+                dao.updateQuestion(q);
+
+                resp.sendRedirect(req.getContextPath() + "/dashboard?page=question");
                 return;
             }
 
-            // ============ USER QUIZ SUBMISSION ============
-            submitQuiz(req, resp);
+            // ================= USER QUIZ =================
+            List<Question> questions = dao.getAllQuestions();
+
+            int score = 0;
+
+            for (Question q : questions) {
+
+                String selected = req.getParameter("q_" + q.getId());
+
+                boolean correct = selected != null &&
+                        selected.equals(q.getCorrectAnswer());
+
+                if (correct) {
+                    score++;
+                }
+
+                dao.saveUserAnswer(
+                        user.getId(),
+                        q.getId(),
+                        selected,
+                        correct
+                );
+            }
+
+            session.setAttribute("score", score);
+            session.setAttribute("total", questions.size());
+
+            resp.sendRedirect(req.getContextPath() + "/dashboard?page=result");
 
         } catch (Exception e) {
             throw new ServletException("Operation failed", e);
         }
     }
 
-    // ============ ADD QUESTION METHOD ============
-    private void addQuestion(HttpServletRequest req, HttpServletResponse resp)
-            throws Exception {
-
-        String questionText = req.getParameter("question_text");
-        String optionA = req.getParameter("option_a");
-        String optionB = req.getParameter("option_b");
-        String optionC = req.getParameter("option_c");
-        String optionD = req.getParameter("option_d");
-        String correctAnswer = req.getParameter("correct_answer");
-
-        if (questionText == null || questionText.trim().isEmpty() ||
-            optionA == null || optionA.trim().isEmpty() ||
-            optionB == null || optionB.trim().isEmpty() ||
-            optionC == null || optionC.trim().isEmpty() ||
-            optionD == null || optionD.trim().isEmpty() ||
-            correctAnswer == null || correctAnswer.trim().isEmpty()) {
-
-            throw new IllegalArgumentException("All fields are required");
-        }
+    // ================= QUESTION BUILDER =================
+    private Question buildQuestion(HttpServletRequest req) {
 
         Question q = new Question();
-        q.setQuestionText(questionText);
-        q.setOptionA(optionA);
-        q.setOptionB(optionB);
-        q.setOptionC(optionC);
-        q.setOptionD(optionD);
-        q.setCorrectAnswer(correctAnswer);
 
-        dao.addQuestion(q);
+        q.setQuestionText(req.getParameter("question_text"));
+        q.setOptionA(req.getParameter("option_a"));
+        q.setOptionB(req.getParameter("option_b"));
+        q.setOptionC(req.getParameter("option_c"));
+        q.setOptionD(req.getParameter("option_d"));
+        q.setCorrectAnswer(req.getParameter("correct_answer"));
 
-        // Redirect back to admin panel
-        resp.sendRedirect(req.getContextPath() + "/admin/question");
-    }
-
-    // ============ DELETE QUESTION METHOD ============
-    private void deleteQuestion(HttpServletRequest req, HttpServletResponse resp)
-            throws Exception {
-
-        String idStr = req.getParameter("id");
-
-        if (idStr == null || idStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Question ID is required");
-        }
-
-        int id = Integer.parseInt(idStr);
-        dao.deleteQuestion(id);
-
-        // Redirect back to admin panel
-        resp.sendRedirect(req.getContextPath() + "/admin/question");
-    }
-
-    // ============ UPDATE QUESTION METHOD ============
-    private void updateQuestion(HttpServletRequest req, HttpServletResponse resp)
-            throws Exception {
-
-        String idStr = req.getParameter("id");
-        String questionText = req.getParameter("question_text");
-        String optionA = req.getParameter("option_a");
-        String optionB = req.getParameter("option_b");
-        String optionC = req.getParameter("option_c");
-        String optionD = req.getParameter("option_d");
-        String correctAnswer = req.getParameter("correct_answer");
-
-        if (idStr == null || idStr.trim().isEmpty() ||
-            questionText == null || questionText.trim().isEmpty() ||
-            optionA == null || optionA.trim().isEmpty() ||
-            optionB == null || optionB.trim().isEmpty() ||
-            optionC == null || optionC.trim().isEmpty() ||
-            optionD == null || optionD.trim().isEmpty() ||
-            correctAnswer == null || correctAnswer.trim().isEmpty()) {
-
-            throw new IllegalArgumentException("All fields are required");
-        }
-
-        int id = Integer.parseInt(idStr);
-
-        Question q = new Question();
-        q.setId(id);
-        q.setQuestionText(questionText);
-        q.setOptionA(optionA);
-        q.setOptionB(optionB);
-        q.setOptionC(optionC);
-        q.setOptionD(optionD);
-        q.setCorrectAnswer(correctAnswer);
-
-        dao.updateQuestion(q);
-
-        // Redirect back to admin panel
-        resp.sendRedirect(req.getContextPath() + "/admin/question");
-    }
-
-    // ============ SUBMIT QUIZ METHOD ============
-    private void submitQuiz(HttpServletRequest req, HttpServletResponse resp)
-            throws Exception {
-
-        HttpSession session = req.getSession(false);
-
-        // ❗ USER CHECK
-        if (session == null) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
-
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
-
-        List<Question> questions = dao.getAllQuestions();
-
-        int score = 0;
-
-        for (Question q : questions) {
-
-            String selected = req.getParameter("q_" + q.getId());
-
-            if (selected != null && selected.equals(q.getCorrectAnswer())) {
-                score++;
-            }
-
-            // save answer (safe)
-            dao.saveUserAnswer(
-                    user.getId(),
-                    q.getId(),
-                    selected,
-                    selected != null && selected.equals(q.getCorrectAnswer())
-            );
-        }
-
-        // ---------------- RESULT ----------------
-        req.setAttribute("score", score);
-        req.setAttribute("total", questions.size());
-        req.setAttribute("questions", questions);
-
-        req.getRequestDispatcher("/dashboard/result.jsp")
-                .forward(req, resp);
+        return q;
     }
 }

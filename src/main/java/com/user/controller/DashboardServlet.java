@@ -1,6 +1,10 @@
 package com.user.controller;
 
 import java.io.IOException;
+import java.util.List;
+
+import com.question.model.Question;
+import com.question.model.dao.QuestionDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,9 +12,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
+
+    QuestionDao dao = new QuestionDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -24,38 +29,49 @@ public class DashboardServlet extends HttpServlet {
 
         String contentPage = "/dashboard/info.jsp";
 
-        switch (page) {
+        try {
 
-            case "question":
-                contentPage = "/dashboard/question.jsp";
-                break;
+            switch (page) {
 
-            case "result":
-                contentPage = "/dashboard/result.jsp";
-                break;
+                case "question":
 
-            case "adminhero":
-                contentPage = "/dashboard/adminhero.jsp";
-                break;
+                    // ✅ FIX: LOAD QUESTIONS HERE
+                    List<Question> questions = dao.getAllQuestions();
+                    req.setAttribute("questions", questions);
 
-            case "adminwhyus":
-                contentPage = "/dashboard/adminwhyus.jsp";
-                break;
+                    contentPage = "/dashboard/question.jsp";
+                    break;
 
-            case "adminabout":
-                contentPage = "/dashboard/adminabout.jsp";
-                break;
+                case "result":
+                    contentPage = "/dashboard/result.jsp";
+                    break;
 
-            case "adminlocalnews":
-                contentPage = "/dashboard/adminlocalnews.jsp";
-                break;
+                case "adminhero":
+                    contentPage = "/dashboard/adminhero.jsp";
+                    break;
 
-            case "adminanswers":
-                contentPage = "/dashboard/adminanswers.jsp";
-                break;
+                case "adminwhyus":
+                    contentPage = "/dashboard/adminwhyus.jsp";
+                    break;
 
-            default:
-                contentPage = "/dashboard/info.jsp";
+                case "adminabout":
+                    contentPage = "/dashboard/adminabout.jsp";
+                    break;
+
+                case "adminlocalnews":
+                    contentPage = "/dashboard/adminlocalnews.jsp";
+                    break;
+
+                case "adminanswers":
+                    contentPage = "/dashboard/adminanswers.jsp";
+                    break;
+
+                default:
+                    contentPage = "/dashboard/info.jsp";
+            }
+
+        } catch (Exception e) {
+            throw new ServletException("Dashboard load failed", e);
         }
 
         req.setAttribute("contentPage", contentPage);

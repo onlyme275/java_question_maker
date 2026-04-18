@@ -1,139 +1,193 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.question.model.Question" %>
+<%@ page import="com.user.model.User" %>
 
 <%
-    List<Question> questions = (List<Question>) request.getAttribute("questions");
+User user = (User) session.getAttribute("user");
+boolean isAdmin = (user != null && user.getIs_staff() == 1);
+
+List<Question> questions = (List<Question>) request.getAttribute("questions");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Question Panel</title>
+<title>Question System</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f3f4f6;
-        }
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f9;
+}
 
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-        }
+.container {
+    width: 75%;
+    margin: auto;
+}
 
-        .card {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-        }
+h2 {
+    text-align: center;
+    margin: 20px 0;
+}
 
-        .form-box {
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+.card {
+    background: white;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-        }
+.box {
+    background: #fff8dc;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
 
-        button {
-            padding: 8px 12px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
 
-        .add-btn {
-            background: green;
-            color: white;
-        }
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-        .delete-btn {
-            background: red;
-            color: white;
-        }
+.add { background: green; color: white; }
+.del { background: red; color: white; }
+.edit { background: orange; color: white; }
+.save { background: blue; color: white; }
 
-        .edit-btn {
-            background: orange;
-            color: white;
-        }
-    </style>
+.edit-box {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background: #eef;
+    border-radius: 10px;
+}
+</style>
+
+<script>
+function toggleEdit(id){
+    let box = document.getElementById("edit_" + id);
+    box.style.display = (box.style.display === "block") ? "none" : "block";
+}
+</script>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>🛠 Admin Question Panel</h2>
+<h2>📘 Question System</h2>
 
-<!-- ================= CREATE QUESTION ================= -->
-<div class="form-box">
+<!-- ================= ADMIN CREATE ================= -->
+<% if(isAdmin){ %>
 
-    <h3>Create New Question</h3>
+<div class="box">
 
-    <form method="post" action="${pageContext.request.contextPath}/admin/question">
+<h3>Create Question</h3>
 
-        <input type="hidden" name="action" value="add">
+<form method="post" action="<%=request.getContextPath()%>/question">
 
-        <input type="text" name="question_text" placeholder="Enter Question" required>
+<input type="hidden" name="action" value="add">
 
-        <input type="text" name="option_a" placeholder="Option A" required>
-        <input type="text" name="option_b" placeholder="Option B" required>
-        <input type="text" name="option_c" placeholder="Option C" required>
-        <input type="text" name="option_d" placeholder="Option D" required>
+<input name="question_text" placeholder="Enter Question" required>
+<input name="option_a" placeholder="Option A" required>
+<input name="option_b" placeholder="Option B" required>
+<input name="option_c" placeholder="Option C" required>
+<input name="option_d" placeholder="Option D" required>
 
-        <select name="correct_answer" required>
-            <option value="">Select Correct Answer</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-        </select>
+<select name="correct_answer" required>
+    <option value="">Correct Answer</option>
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+    <option value="D">D</option>
+</select>
 
-        <button class="add-btn" type="submit">➕ Add Question</button>
+<button class="add" type="submit">➕ Add Question</button>
 
-    </form>
+</form>
 
 </div>
 
-<!-- ================= LIST QUESTIONS ================= -->
+<% } %>
 
-<h3>📋 All Questions</h3>
+<!-- ================= USER QUIZ FORM ================= -->
+<% if(!isAdmin){ %>
+<form method="post" action="<%=request.getContextPath()%>/question">
+<% } %>
 
+<!-- ================= QUESTIONS ================= -->
 <%
-if(questions != null){
+if(questions != null && !questions.isEmpty()){
     for(Question q : questions){
 %>
 
 <div class="card">
 
-    <b><%=q.getQuestionText()%></b><br><br>
+    <p><b><%=q.getQuestionText()%></b></p>
 
-    A: <%=q.getOptionA()%><br>
-    B: <%=q.getOptionB()%><br>
-    C: <%=q.getOptionC()%><br>
-    D: <%=q.getOptionD()%><br>
+    <!-- USER MODE -->
+    <% if(!isAdmin){ %>
 
-    <p><b>Correct:</b> <%=q.getCorrectAnswer()%></p>
+        <label><input type="radio" name="q_<%=q.getId()%>" value="A"> <%=q.getOptionA()%></label><br>
+        <label><input type="radio" name="q_<%=q.getId()%>" value="B"> <%=q.getOptionB()%></label><br>
+        <label><input type="radio" name="q_<%=q.getId()%>" value="C"> <%=q.getOptionC()%></label><br>
+        <label><input type="radio" name="q_<%=q.getId()%>" value="D"> <%=q.getOptionD()%></label><br>
 
-    <!-- DELETE -->
-    <form method="post" action="${pageContext.request.contextPath}/admin/question" style="display:inline;">
-        <input type="hidden" name="action" value="delete">
-        <input type="hidden" name="id" value="<%=q.getId()%>">
-        <button class="delete-btn">Delete</button>
-    </form>
+    <% } %>
 
-    <!-- EDIT (future enhancement link) -->
-    <a href="${pageContext.request.contextPath}/admin/question?edit=<%=q.getId()%>">
-        <button class="edit-btn">Edit</button>
-    </a>
+    <!-- ================= ADMIN MODE ================= -->
+    <% if(isAdmin){ %>
+
+        <!-- DELETE -->
+        <form method="post" action="<%=request.getContextPath()%>/question" style="display:inline;">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="<%=q.getId()%>">
+            <button class="del" type="submit">Delete</button>
+        </form>
+
+        <!-- EDIT BUTTON -->
+        <button type="button" class="edit" onclick="toggleEdit(<%=q.getId()%>)">
+            Edit
+        </button>
+
+        <!-- EDIT BOX -->
+        <div id="edit_<%=q.getId()%>" class="edit-box">
+
+            <form method="post" action="<%=request.getContextPath()%>/question">
+
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="id" value="<%=q.getId()%>">
+
+                <input name="question_text" value="<%=q.getQuestionText()%>">
+                <input name="option_a" value="<%=q.getOptionA()%>">
+                <input name="option_b" value="<%=q.getOptionB()%>">
+                <input name="option_c" value="<%=q.getOptionC()%>">
+                <input name="option_d" value="<%=q.getOptionD()%>">
+
+                <select name="correct_answer">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+
+                <button class="save" type="submit">Save</button>
+
+            </form>
+
+        </div>
+
+    <% } %>
 
 </div>
 
@@ -141,6 +195,12 @@ if(questions != null){
     }
 }
 %>
+
+<!-- ================= SUBMIT QUIZ ================= -->
+<% if(!isAdmin){ %>
+    <button class="add" type="submit">Submit Quiz</button>
+</form>
+<% } %>
 
 </div>
 

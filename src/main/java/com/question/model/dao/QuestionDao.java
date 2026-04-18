@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.question.model.Question;
+import com.question.model.UserAnswer;
 import com.utils.DbConnection;
 
 public class QuestionDao {
@@ -91,7 +92,7 @@ public class QuestionDao {
         }
     }
 
-    // existing method for quiz
+    // ---------------- SAVE ANSWER ----------------
     public void saveUserAnswer(int userId, int questionId, String selected, boolean isCorrect) throws Exception {
 
         String sql = "INSERT INTO user_answer(user_id, question_id, selected_option, is_correct) VALUES(?,?,?,?)";
@@ -106,5 +107,34 @@ public class QuestionDao {
 
             ps.executeUpdate();
         }
+    }
+
+    // ---------------- USER ANSWERS ----------------
+    public List<UserAnswer> getUserAnswers(int userId) throws Exception {
+
+        List<UserAnswer> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM user_answer WHERE user_id=?";
+
+        try (Connection con = DbConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UserAnswer ua = new UserAnswer();
+                ua.setId(rs.getInt("id"));
+                ua.setUserId(rs.getInt("user_id"));
+                ua.setQuestionId(rs.getInt("question_id"));
+                ua.setSelectedOption(rs.getString("selected_option"));
+                ua.setCorrect(rs.getBoolean("is_correct"));
+
+                list.add(ua);
+            }
+        }
+
+        return list;
     }
 }

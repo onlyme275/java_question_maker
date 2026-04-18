@@ -1,87 +1,34 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.question.model.Question" %>
+<%@ page import="com.question.model.dao.QuestionDao" %>
+<%@ page import="com.question.model.UserAnswer" %>
+<%@ page import="com.user.model.User" %>
 
 <%
-    Integer scoreObj = (Integer) request.getAttribute("score");
-    Integer totalObj = (Integer) request.getAttribute("total");
-    List<Question> questions = (List<Question>) request.getAttribute("questions");
+User user = (User) session.getAttribute("user");
 
-    int score = (scoreObj != null) ? scoreObj : 0;
-    int total = (totalObj != null) ? totalObj : 0;
+QuestionDao dao = new QuestionDao();
+
+List<UserAnswer> answers = dao.getUserAnswers(user.getId());
+
+Integer score = (Integer) session.getAttribute("score");
+Integer total = (Integer) session.getAttribute("total");
 %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Result</title>
-
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-        }
-
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .score-box {
-            background: #d1fae5;
-            padding: 20px;
-            text-align: center;
-            font-size: 22px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .correct {
-            color: green;
-            font-weight: bold;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>🎯 Quiz Result</h2>
-
-<div class="score-box">
-    Score: <%=score%> / <%=total%>
-</div>
+<h2>Score: <%=score%> / <%=total%></h2>
 
 <%
-if(questions != null){
-    for(Question q : questions){
+for(UserAnswer a : answers){
 %>
 
 <div class="card">
+    Question ID: <%=a.getQuestionId()%><br>
+    Selected: <%=a.getSelectedOption()%><br>
 
-    <p><b><%=q.getQuestionText()%></b></p>
-
-    <p class="correct">
-        Correct Answer: <%=q.getCorrectAnswer()%>
-    </p>
-
+    <b style="color:<%=a.isCorrect() ? "green":"red"%>">
+        <%=a.isCorrect() ? "Correct" : "Wrong"%>
+    </b>
 </div>
 
 <%
-    }
 }
 %>
-
-</div>
-
-</body>
-</html>
