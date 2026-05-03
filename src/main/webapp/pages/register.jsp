@@ -4,7 +4,7 @@
     <title>Register</title>
 </head>
 <body>
-
+<jsp:include page="/components/header.jsp"/>
 <h2>Register Page</h2>
 
 <form action="register" method="post">
@@ -22,6 +22,7 @@
 </p>
 
 <a href="login">Back to Login</a>
+<jsp:include page="/components/footer.jsp"/>
 
 </body>
 </html>

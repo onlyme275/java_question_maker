@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.question.model.Question;
 import com.question.model.dao.QuestionDao;
+import com.user.model.User;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -20,6 +22,15 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        // Check if user is logged in
+        HttpSession session = req.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user == null) {
+            resp.sendRedirect("login");
+            return;
+        }
 
         String page = req.getParameter("page");
 
@@ -35,7 +46,6 @@ public class DashboardServlet extends HttpServlet {
 
                 case "question":
 
-                    // ✅ FIX: LOAD QUESTIONS HERE
                     List<Question> questions = dao.getAllQuestions();
                     req.setAttribute("questions", questions);
 
@@ -80,3 +90,7 @@ public class DashboardServlet extends HttpServlet {
                 .forward(req, resp);
     }
 }
+
+
+
+

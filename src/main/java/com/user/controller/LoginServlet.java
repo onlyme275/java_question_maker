@@ -29,9 +29,9 @@ public class LoginServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        if(email.isEmpty() || password.isEmpty()){
+        if(email == null || email.isEmpty() || password == null || password.isEmpty()){
             req.setAttribute("error", "Email and password required!");
-            req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);  // ✅ FIXED
+            req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
             return;
         }
 
@@ -41,16 +41,16 @@ public class LoginServlet extends HttpServlet {
 
             if(user == null){
                 req.setAttribute("error", "Invalid email or password!");
-                req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);  
+                req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
             } else {
-                HttpSession session = req.getSession();
+                HttpSession session = req.getSession(true);
                 session.setAttribute("user", user);
-
-                resp.sendRedirect("dashboard");
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
             }
 
         } catch (Exception e){
-            req.setAttribute("error", e.getMessage());
+            e.printStackTrace();
+            req.setAttribute("error", "Login error: " + e.getMessage());
             req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
         }
     }
