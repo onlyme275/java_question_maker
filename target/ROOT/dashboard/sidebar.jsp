@@ -25,7 +25,6 @@ body {
     background: #f1f5f9;
 }
 
-/* SIDEBAR */
 .sidebar {
     width: 230px;
     background: #0f172a;
@@ -38,7 +37,6 @@ body {
     flex-direction: column;
 }
 
-/* MENU */
 .sidebar h3 {
     text-align: center;
     padding: 15px 0;
@@ -66,7 +64,6 @@ body {
     background: #1e293b;
 }
 
-/* LOGOUT */
 .logout {
     background: #dc2626;
     padding: 12px 18px;
@@ -78,7 +75,6 @@ body {
     background: #b91c1c;
 }
 
-/* CONTENT FIX (IMPORTANT PART) */
 .content {
     position: absolute;
     left: 230px;
@@ -90,7 +86,6 @@ body {
     background: #f1f5f9;
 }
 
-/* BADGE */
 .badge {
     font-size: 12px;
     background: #38bdf8;
@@ -106,7 +101,6 @@ body {
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
 
     <h3>
@@ -162,10 +156,10 @@ body {
 
 </div>
 
-<!-- CONTENT -->
 <div class="content">
     <jsp:include page="<%= contentPage %>" />
 </div>
 
 </body>
 </html>
+
