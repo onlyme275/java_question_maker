@@ -1,3 +1,4 @@
+com/whyus/controller/WhyusServlet.class
 com/user/controller/RegisterServlet.class
 com/user/controller/MainServlet.class
 com/user/controller/LogoutServlet.class
@@ -7,11 +8,14 @@ com/hero/model/dao/HeroDao.class
 com/whyus/model/Whyus.class
 com/user/model/dao/UserDao.class
 com/hero/model/Hero.class
+com/about/controller/AboutServlet.class
 com/user/controller/DashboardServlet.class
 com/user/controller/LoginServlet.class
 com/user/model/User.class
 com/question/controller/QuestionServlet.class
 HeroServlet.class
+com/about/model/About.class
 com/whyus/model/dao/WhyusDao.class
+com/about/model/dao/AboutDao.class
 com/question/model/Question.class
 com/question/model/dao/QuestionDao.class

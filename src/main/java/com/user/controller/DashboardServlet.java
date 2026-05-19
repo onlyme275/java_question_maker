@@ -10,6 +10,8 @@ import com.hero.model.Hero;
 import com.hero.model.dao.HeroDao;
 import com.whyus.model.Whyus;
 import com.whyus.model.dao.WhyusDao;
+import com.about.model.About;
+import com.about.model.dao.AboutDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -75,6 +77,8 @@ public class DashboardServlet extends HttpServlet {
                     break;
 
                 case "adminabout":
+                    List<About> aboutList = new AboutDao().getAbout();
+                    req.setAttribute("aboutList", aboutList);
                     contentPage = "/dashboard/adminabout.jsp";
                     break;
 

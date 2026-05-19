@@ -57,6 +57,19 @@ CREATE TABLE `whyus` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `about`
+--
+
+CREATE TABLE `about` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `question`
 --
 
@@ -132,6 +145,12 @@ ALTER TABLE `whyus`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `about`
+--
+ALTER TABLE `about`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `question`
 --
 ALTER TABLE `question`
@@ -164,6 +183,12 @@ ALTER TABLE `hero`
 -- AUTO_INCREMENT for table `whyus`
 --
 ALTER TABLE `whyus`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `about`
+--
+ALTER TABLE `about`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

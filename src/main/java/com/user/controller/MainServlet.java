@@ -7,6 +7,8 @@ import com.hero.model.Hero;
 import com.hero.model.dao.HeroDao;
 import com.whyus.model.Whyus;
 import com.whyus.model.dao.WhyusDao;
+import com.about.model.About;
+import com.about.model.dao.AboutDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,9 +29,11 @@ public class MainServlet extends HttpServlet {
         try {
             List<Hero> heroes = dao.getHero();
             List<Whyus> whyusList = whyusDao.getWhyus();
+            List<About> aboutList = new AboutDao().getAbout();
 
             req.setAttribute("heroes", heroes);
             req.setAttribute("whyusList", whyusList);
+            req.setAttribute("aboutList", aboutList);
 
             req.getRequestDispatcher("/components/main.jsp")
                     .forward(req, resp);
