@@ -44,6 +44,19 @@ INSERT INTO `hero` (`id`, `title`, `description`, `image`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `whyus`
+--
+
+CREATE TABLE `whyus` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `question`
 --
 
@@ -113,6 +126,12 @@ ALTER TABLE `hero`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `whyus`
+--
+ALTER TABLE `whyus`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `question`
 --
 ALTER TABLE `question`
@@ -140,6 +159,12 @@ ALTER TABLE `user_answer`
 --
 ALTER TABLE `hero`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `whyus`
+--
+ALTER TABLE `whyus`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `question`

@@ -13,3 +13,6 @@
 /home/onlyme/Desktop/java_coursework/java_question_maker/src/main/java/com/user/model/User.java
 /home/onlyme/Desktop/java_coursework/java_question_maker/src/main/java/com/user/model/dao/UserDao.java
 /home/onlyme/Desktop/java_coursework/java_question_maker/src/main/java/com/utils/DbConnection.java
+/home/onlyme/Desktop/java_coursework/java_question_maker/src/main/java/com/whyus/controller/WhyusServlet.java
+/home/onlyme/Desktop/java_coursework/java_question_maker/src/main/java/com/whyus/model/Whyus.java
+/home/onlyme/Desktop/java_coursework/java_question_maker/src/main/java/com/whyus/model/dao/WhyusDao.java

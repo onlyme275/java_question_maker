@@ -4,6 +4,7 @@ com/user/controller/LogoutServlet.class
 com/question/model/UserAnswer.class
 com/utils/DbConnection.class
 com/hero/model/dao/HeroDao.class
+com/whyus/model/Whyus.class
 com/user/model/dao/UserDao.class
 com/hero/model/Hero.class
 com/user/controller/DashboardServlet.class
@@ -11,5 +12,6 @@ com/user/controller/LoginServlet.class
 com/user/model/User.class
 com/question/controller/QuestionServlet.class
 HeroServlet.class
+com/whyus/model/dao/WhyusDao.class
 com/question/model/Question.class
 com/question/model/dao/QuestionDao.class

@@ -6,6 +6,10 @@ import java.util.List;
 import com.question.model.Question;
 import com.question.model.dao.QuestionDao;
 import com.user.model.User;
+import com.hero.model.Hero;
+import com.hero.model.dao.HeroDao;
+import com.whyus.model.Whyus;
+import com.whyus.model.dao.WhyusDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,6 +22,8 @@ import jakarta.servlet.http.HttpSession;
 public class DashboardServlet extends HttpServlet {
 
     QuestionDao dao = new QuestionDao();
+    HeroDao heroDao = new HeroDao();
+    WhyusDao whyusDao = new WhyusDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -57,10 +63,14 @@ public class DashboardServlet extends HttpServlet {
                     break;
 
                 case "adminhero":
+                    List<Hero> heroes = heroDao.getHero();
+                    req.setAttribute("heroes", heroes);
                     contentPage = "/dashboard/adminhero.jsp";
                     break;
 
                 case "adminwhyus":
+                    List<Whyus> whyusList = whyusDao.getWhyus();
+                    req.setAttribute("whyusList", whyusList);
                     contentPage = "/dashboard/adminwhyus.jsp";
                     break;
 
