@@ -3,15 +3,15 @@ package com.user.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.about.model.About;
+import com.about.model.dao.AboutDao;
+import com.hero.model.Hero;
+import com.hero.model.dao.HeroDao;
 import com.question.model.Question;
 import com.question.model.dao.QuestionDao;
 import com.user.model.User;
-import com.hero.model.Hero;
-import com.hero.model.dao.HeroDao;
 import com.whyus.model.Whyus;
 import com.whyus.model.dao.WhyusDao;
-import com.about.model.About;
-import com.about.model.dao.AboutDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -80,10 +80,6 @@ public class DashboardServlet extends HttpServlet {
                     List<About> aboutList = new AboutDao().getAbout();
                     req.setAttribute("aboutList", aboutList);
                     contentPage = "/dashboard/adminabout.jsp";
-                    break;
-
-                case "adminlocalnews":
-                    contentPage = "/dashboard/adminlocalnews.jsp";
                     break;
 
                 case "adminanswers":

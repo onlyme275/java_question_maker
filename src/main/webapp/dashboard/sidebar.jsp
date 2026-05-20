@@ -136,10 +136,6 @@ body {
             <i class="fa-solid fa-circle-info"></i> About Us
         </a>
 
-        <a href="dashboard?page=adminlocalnews">
-            <i class="fa-solid fa-newspaper"></i> Local News
-        </a>
-
         <a href="dashboard?page=adminanswers">
             <i class="fa-solid fa-comments"></i> Answers
         </a>
