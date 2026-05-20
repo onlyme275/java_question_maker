@@ -16,6 +16,8 @@
             --border: #e5e7eb;
             --error: #ef4444;
             --error-bg: #fef2f2;
+            --success: #166534;
+            --success-bg: #ecfdf3;
         }
 
         body {
@@ -138,31 +140,41 @@
             transform: scale(0.98);
         }
 
-        .error-message {
-            background-color: var(--error-bg);
-            color: var(--error);
+        .status-message {
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             font-size: 0.875rem;
             font-weight: 500;
             margin-bottom: 1.5rem;
-            border: 1px solid #fecaca;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
+        .status-message.error {
+            background-color: var(--error-bg);
+            color: var(--error);
+            border: 1px solid #fecaca;
+        }
+
+        .status-message.success {
+            background-color: var(--success-bg);
+            color: var(--success);
+            border: 1px solid #bbf7d0;
+        }
+
         .footer-link {
             text-align: center;
             margin-top: 1.5rem;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--text-muted);
+            line-height: 1.5;
         }
 
         .footer-link a {
             color: var(--primary);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.15s ease-in-out;
         }
 
@@ -182,7 +194,14 @@
             <p>Please enter your details to sign in.</p>
         </div>
 
-        <div class="error-message" style="${empty error ? 'display: none;' : ''}">
+        <div class="status-message success" style="${param.registered eq 'true' ? '' : 'display: none;'}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20" style="flex-shrink: 0;">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0-8-8 8 8 0 0 0 8 8Zm3.71-9.29a1 1 0 0 0-1.42-1.42L9 10.59 7.71 9.29a1 1 0 1 0-1.42 1.42l2 2a1 1 0 0 0 1.42 0Z" clip-rule="evenodd" />
+            </svg>
+            <span>Registration successful. You can sign in now.</span>
+        </div>
+
+        <div class="status-message error" style="${empty error ? 'display: none;' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20" style="flex-shrink: 0;">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
@@ -194,17 +213,17 @@
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" class="form-control" placeholder="name@example.com" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
             </div>
 
             <button type="submit" class="btn-submit">Sign In</button>
         </form>
 
         <div class="footer-link">
-            Don't have an account? <a href="register">Register here</a>
+            Don't have an account? <a href="register">Create one</a>
         </div>
     </div>
 </div>
@@ -212,4 +231,3 @@
 <jsp:include page="/components/footer.jsp"/>
 </body>
 </html>
-
